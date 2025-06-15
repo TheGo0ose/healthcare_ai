@@ -1,0 +1,80 @@
+{
+    "intents": [
+      {
+        "tag": "National Hospital (Ministry of Health)",
+        "location": [42.8790, 74.5905],
+        "Address": "1/4 Togolok Moldo St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "National Hospital – Adult Emergency Dept.",
+        "location": [42.8791, 74.5906],
+        "Address": "1K Togolok Moldo St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "National Hospital – Nephrology Dept.",
+        "location": [42.8792, 74.5907],
+        "Address": "1E Togolok Moldo St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Life Hospital",
+        "location": [42.8640, 74.6190],
+        "Address": "85 Isanov St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Vedanta Hospital",
+        "location": [42.8800, 74.6100],
+        "Address": "Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "NeoMed Diagnostic & Consulting Group",
+        "location": [42.8735, 74.5970],
+        "Address": "46 Orozbekova St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "National Center of Cardiology & Internal Medicine",
+        "location": [42.8840, 74.5985],
+        "Address": "137 Bokonbaev St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Republican Clinical Hospital",
+        "location": [42.8840, 74.5985],
+        "Address": "137 Bokonbaev St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "City Hospital No. 4 – Traumatology Unit",
+        "location": [42.8675, 74.6140],
+        "Address": "206 Krivonosova St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Children’s Hospital No. 3",
+        "location": [42.8610, 74.5830],
+        "Address": "8a Baitik Baatyr St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Presidential Hospital",
+        "location": [42.8780, 74.5920],
+        "Address": "110 Kievskaya St, Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Bishkek City Trauma Unit",
+        "location": [42.8690, 74.6060],
+        "Address": "Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Eye Microsurgery Center",
+        "location": [42.8850, 74.6160],
+        "Address": "Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Azmi Hospital (Asian Medical Institute Clinic)",
+        "location": [42.8670, 74.6100],
+        "Address": "Bishkek, Kyrgyzstan"
+      },
+      {
+        "tag": "Ophthalmic Microsurgery Hospital Dr. Ismankulov",
+        "location": [42.8560, 74.6040],
+        "Address": "1/5 Suerkulova St, Bishkek, Kyrgyzstan"
+      }
+    ]
+  }
+  

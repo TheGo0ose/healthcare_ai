@@ -1,0 +1,191 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthBot Chat</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        #chat-box p {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: #333;
+            margin-right: auto;
+        }
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+        #send-button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <div id="input-container">
+            <input type="text" id="chat-input" placeholder="Type your message..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+
+        function addMessage(message, isUser) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isUser ? 'user-message' : 'bot-message';
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            chatInput.value = '';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
+
+                const data = await response.json();
+                let botResponse = '';
+
+                if (Array.isArray(data.answer)) {
+                    if (data.answer[0] === 'center') {
+                        botResponse = 'Nearby medical centers:\n';
+                        for (let i = 1; i < data.answer.length; i++) {
+                            const [name, distance, address] = data.answer[i];
+                            botResponse += `${name}: ${distance} - ${address}\n`;
+                        }
+                    } else {
+                        botResponse = data.answer[1];
+                        if (data.answer[2]) {
+                            botResponse += '\nPrecautions: ' + data.answer[2].join(', ');
+                        }
+                    }
+                } else {
+                    botResponse = data.answer;
+                }
+
+                addMessage(botResponse, false);
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, something went wrong. Please try again.', false);
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
