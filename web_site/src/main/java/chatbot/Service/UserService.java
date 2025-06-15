@@ -16,12 +16,12 @@ public class UserService {
 
     public User registerUser(String username, String password) {
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Имя пользователя и пароль не могут быть пустыми!");
+            throw new IllegalArgumentException("Username and password cannot be empty!");
         }
 
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
-            throw new RuntimeException("Такой пользователь уже существует!");
+            throw new RuntimeException("User already exist!");
         }
 
         String hashedPassword = passwordEncoder.encode(password);
@@ -29,18 +29,18 @@ public class UserService {
         user.setEmail(username + "@example.com");
 
         User saved = userRepository.save(user);
-        System.out.println("Пользователь зарегистрирован: " + saved.getUsername());
+        System.out.println("User created: " + saved.getUsername());
         return saved;
     }
 
     public User loginUser(String username, String password) {
         if (username == null || password == null) {
-            throw new IllegalArgumentException("Имя пользователя и пароль обязательны.");
+            throw new IllegalArgumentException("Username and password are null!");
         }
 
         User user = userRepository.findByUsername(username);
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Неправильное имя или пароль!");
+            throw new RuntimeException("Incorrect username or password!");
         }
 
         return user;
